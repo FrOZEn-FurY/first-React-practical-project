@@ -1,9 +1,9 @@
 import { Component } from "react";
+import productContext from "../contexts/product";
 
 class Product extends Component {
-  state = {
-    buy_count: 0,
-  };
+  static contextType = productContext;
+
   render() {
     return (
       <div className="card border border-dark">
@@ -13,21 +13,21 @@ class Product extends Component {
         <div className="card-body">
           <p className="text-succes text-justified">This is the description.</p>
           <h6>
-            Number of items from this that you want: {this.state.buy_count}
+            Number of items from this that you want: {this.props.count}
           </h6>
         </div>
         <div className="card-footer text-center">
           <div className="btn-group">
             <button
               onClick={this.handleIncreament10}
-              className="btn btn-success"
+              className={this.handleIncreamentBackgroundColor()}
               type="button"
             >
               +10
             </button>
             <button
               onClick={this.handleIncreament}
-              className="btn btn-success"
+              className={this.handleIncreamentBackgroundColor()}
               type="button"
             >
               +
@@ -48,14 +48,14 @@ class Product extends Component {
             </button>
             <button
               onClick={this.handleDecreament}
-              className="btn btn-warning"
+              className={this.handleDecreamentBackgroundColor()}
               type="button"
             >
               -
             </button>
             <button
               onClick={this.handleDecreament10}
-              className="btn btn-warning"
+              className={this.handleDecreamentBackgroundColor()}
               type="button"
             >
               -10
@@ -66,32 +66,44 @@ class Product extends Component {
     );
   }
 
-  handleIncreament = () => {
-    this.setState({ buy_count: this.state.buy_count + 1 });
-  };
-
-  handleIncreament10 = () => {
-    this.setState({ buy_count: this.state.buy_count + 10 });
-  };
-
-  handleDecreament = () => {
-    if (this.state.buy_count > 0) {
-      this.setState({ buy_count: this.state.buy_count - 1 });
+  handleIncreamentBackgroundColor = () => {
+    if (this.props.count % 2 === 0) {
+      return "btn btn-success";
+    } else {
+      return "btn btn-primary";
     }
   };
 
-  handleDecreament10 = () => {
-    if (this.state.buy_count > 10) {
-      this.setState({ buy_count: this.state.buy_count - 10 });
+  handleDecreamentBackgroundColor = () => {
+    if (this.props.count % 2 === 0) {
+      return "btn btn-warning";
+    } else {
+      return "btn btn-dark";
     }
   };
 
   handleDelete = () => {
-    this.props.deleteProduct(this.props.id)
+    this.context.deleteProduct(this.props.id);
   };
 
+  handleIncreament = () => {
+    this.context.handleIncreament(this.props.id);
+  }
+
+  handleIncreament10 = () => {
+    this.context.handleIncreament10(this.props.id);
+  }
+
+  handleDecreament = () => {
+    this.context.handleDecreament(this.props.id);
+  }
+
+  handleDecreament10 = () => {
+    this.context.handleDecreament10(this.props.id);
+  }
+
   handleClear = () => {
-    this.setState({ buy_count: 0 });
+    this.context.handleClear(this.props.id);
   };
 
   headerBackground = () => {
